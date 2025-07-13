@@ -9,7 +9,7 @@ import java.util.Stack;
 @SuppressWarnings("unused")
 class Solution {
 
-    // 345
+    //#region 345
     public String reverseVowels(String s) {
         // cách 1
         // Map<Integer, Character> mp = new HashMap<>();
@@ -94,8 +94,9 @@ class Solution {
 
         return sb.toString();
     }
+    //#endregion
 
-    //151
+    //#region 151
     public String reverseWords(String s) {
         s = s.trim();
         String[] arr = s.split(" ");    
@@ -106,9 +107,10 @@ class Solution {
         }
         return res;
     }
+    //#endregion
 
 
-    // 238
+    //#region 238
     public int[] productExceptSelf(int[] nums) {
         int length = nums.length;
         if(length == 1) return nums;
@@ -124,22 +126,17 @@ class Solution {
             postfix[i] = postfix[i + 1] * nums[i];
         }
 
-        System.out.println(Arrays.toString(prefix));
-        System.out.println(Arrays.toString(postfix));
         int[] answer = new int[length];
         answer[0] = postfix[1];
         answer[length - 1] = prefix[length - 1 - 1];
         for(int i = 1; i < length - 1; ++i) {
             answer[i] = prefix[i - 1] * postfix[i + 1];
         }
-        System.out.println(Arrays.toString(answer));
         return answer;
     }
+    //#endregion
 
-    // 605
-
-
-    // 1431
+    //#region 1431
     public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
         List<Boolean> l = new ArrayList<>();
         int greatest = Arrays.stream(candies).max().getAsInt();
@@ -149,15 +146,94 @@ class Solution {
         }
         return l;
     }
+    //#endregion
+
+    // 1071
+    public String gcdOfStrings(String str1, String str2) {
+        String prefixString = "";
+        for (Character c : str1.toCharArray()) {
+            String temp = prefixString + (c + "");
+            if(str2.contains(temp)) prefixString = temp;
+            else break;
+        }
+        return prefixString;
+    }
+
+     
+    //#region 443. String Compression
+    public void addCountToStack(Stack<Character> st, int count) {
+        char[] ch = Integer.toString(count).toCharArray();
+        for (char c : ch) {
+            st.add(c);
+        }
+    }
+
+    public int compress(char[] chars) {
+        char lastCharacter = ' ';
+        int count = 0;
+        Stack<Character> st = new Stack<>();
+        for(Character c : chars) {
+            if(lastCharacter == ' ') {
+                lastCharacter = c;
+                st.add(lastCharacter);
+                ++count;
+                continue;
+            }
+            if(c == lastCharacter) {
+                ++count;
+            } else {
+                lastCharacter = c;
+                if(count != 1)
+                    addCountToStack(st, count);
+                st.add(lastCharacter);
+                count = 1;
+            }
+
+        }
+        if(count != 1)
+            addCountToStack(st, count);
+
+        int index = 0;
+        for (char c : st) {
+            chars[index++] = c;
+        }
+        return index;
+    }
+    //#endregion
+
+    //#region 334. Increasing Triplet Subsequence
+    public boolean increasingTriplet(int[] nums) {
+        int length = nums.length;
+        if(length < 3) return false;
+
+        int[] leftMin = new int[length];
+        leftMin[0] = nums[0];
+        for (int i = 1; i < length; ++i)
+            leftMin[i] = Math.min(leftMin[i - 1], nums[i]);
+
+        int[] rightMax = new int[length];
+        rightMax[length - 1] = nums[length - 1];
+        for (int i = length - 2; i >= 0; --i)
+            rightMax[i] = Math.max(rightMax[i + 1], nums[i]);
+
+        for (int i = 0; i < length; ++i) {
+           if(leftMin[i] < nums[i] && nums[i] < rightMax[i]) return true; 
+        }
+
+        return false;
+    }
+    //#endregion
 
 }
 
 public class App {
     public static void main(String[] args) throws Exception {
         Solution s = new Solution();
-        // String str = "a good   example";
         //  System.out.println(s.reverseWords(str));
         // s.productExceptSelf(new int[]{1,2,3,4});
-        System.out.println((s.kidsWithCandies(new int[] {2,3,5,1,3}, 3)));
+        // System.out.println((s.kidsWithCandies(new int[] {2,3,5,1,3}, 3)));
+        // System.out.println(s.gcdOfStrings("LEET", "CODE"));
+        // System.out.println(s.compress(new char[]{'a','a','b','b','c','c','c'}));
+        // System.out.println(s.increasingTriplet(new int[]{1,2,3,4,5}));
     }
 }

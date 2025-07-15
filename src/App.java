@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.Vector;
 
 @SuppressWarnings("unused")
 class Solution {
@@ -151,9 +152,9 @@ class Solution {
     // 1071
     public String gcdOfStrings(String str1, String str2) {
         String prefixString = "";
-        for (Character c : str1.toCharArray()) {
+        for (Character c : str2.toCharArray()) {
             String temp = prefixString + (c + "");
-            if(str2.contains(temp)) prefixString = temp;
+            if(str1.contains(temp)) prefixString = temp;
             else break;
         }
         return prefixString;
@@ -224,16 +225,92 @@ class Solution {
     }
     //#endregion
 
+
+    //#region 283. Move Zeroes
+    public void moveZeroes(int[] nums) {
+        int[] temp = new int[nums.length];
+        int index = 0;
+        for(int i : nums) {
+            if(i != 0) temp[index++] = i;
+        }
+        for(int i = 0; i < nums.length; ++i) {
+            if(i < index) {
+                nums[i] = temp[i];
+            } else {
+                nums[i] = 0;
+            }
+        }
+        System.out.println(Arrays.toString(nums));
+    }
+    //#endregion
+
+    //#region 392. Is Subsequence
+    public boolean isSubsequence(String s, String t) {
+        if(s.isEmpty()) return true;
+        if(s.length() == 1 && t.length() == 1) return s.equals(t);
+        int index = 0;
+        for (Character c : t.toCharArray()) {
+            if(index >= s.length()) break;
+            if(c == s.charAt(index)) ++index; 
+        }
+        return index == s.length();
+    }
+    //#endregion
+
+    //#region 11. Container With Most Water
+    public int maxArea(int[] height) {
+        int maxAmount = 0;
+        int left = 0, right = height.length - 1;
+        while (left < right) {
+            maxAmount = Math.max(maxAmount, Math.min(height[left], height[right]) * (right - left));
+            if(height[left] < height[right]) ++left;
+            else --right;
+        }
+        return maxAmount;
+    }
+    //#endregion
+
+    //#region 1679. Max Number of K-Sum Pairs
+    public int maxOperations(int[] nums, int k) {
+        // duyệt 2 con trỏ   *sai
+        // int left = 0, right = nums.length - 1;
+        // int count = 0;
+        // while(left < right) {
+        //     if(nums[left] + nums[right] == k) {
+        //         ++count;
+        //     }
+        //     ++left;
+        //     --right;
+        // }
+        // return count;
+
+        // hashmap
+        Map<Integer, Integer> mp = new HashMap<>();
+        for (int i : nums) {
+            if(!mp.containsKey(i)) mp.put(i, 1);
+            else mp.put(i, mp.get(i) + 1);
+        }
+
+        int count = 0;
+        for (Map.Entry<Integer, Integer> entry : mp.entrySet()) {
+            int x = entry.getKey();
+            int y = k - x;
+            if(mp.containsKey(y)) {
+                count += (x == y) ? entry.getValue() / 2 : Math.min(entry.getValue(), mp.get(y));
+                mp.put(x, 0);
+                mp.put(y, 0);
+            }
+        }
+        return count;
+    }
+    //#endregion
+
+    
 }
 
 public class App {
     public static void main(String[] args) throws Exception {
         Solution s = new Solution();
-        //  System.out.println(s.reverseWords(str));
-        // s.productExceptSelf(new int[]{1,2,3,4});
-        // System.out.println((s.kidsWithCandies(new int[] {2,3,5,1,3}, 3)));
-        // System.out.println(s.gcdOfStrings("LEET", "CODE"));
-        // System.out.println(s.compress(new char[]{'a','a','b','b','c','c','c'}));
-        // System.out.println(s.increasingTriplet(new int[]{1,2,3,4,5}));
+        System.out.println(s.maxOperations(new int[] {3,1,3,4,3}, 6));
     }
 }
